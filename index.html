@@ -17,7 +17,7 @@
     body {
       font-family: 'Inter', system-ui, sans-serif;
     }
-    
+
     .mono {
       font-family: 'JetBrains Mono', monospace;
     }
@@ -35,7 +35,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: 
+      background:
         linear-gradient(transparent, rgba(0, 240, 255, 0.03)),
         repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168, 85, 247, 0.03) 2px, rgba(168, 85, 247, 0.03) 4px);
       animation: grid-move 25s linear infinite;
@@ -47,7 +47,7 @@
     }
 
     .neon-text {
-      text-shadow: 
+      text-shadow:
         0 0 10px var(--neon-blue),
         0 0 20px var(--neon-blue),
         0 0 40px var(--neon-purple);
@@ -56,7 +56,7 @@
     .card-hover {
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .card-hover:hover {
       transform: translateY(-12px);
       box-shadow: 0 0 30px -5px rgb(0 240 255 / 0.5);
@@ -67,9 +67,62 @@
       overflow: hidden;
       white-space: nowrap;
     }
+
+    /* ---------- 管理面板相关样式 ---------- */
+    .admin-btn {
+      width: 2rem;
+      height: 2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.65rem;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 0.8rem;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s;
+    }
+    .admin-btn:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
+    .admin-btn-del:hover { border-color: #f43f5e; color: #f43f5e; }
+
+    .form-input {
+      width: 100%;
+      background: #0d0d12;
+      border: 1px solid #374151;
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.85rem;
+      color: #e5e7eb;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.15);
+    }
+
+    #modal-overlay {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+    }
+    .modal-card { animation: modal-in 0.25s ease; }
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body class="bg-[#0a0a0a] text-gray-200">
+
+  <!-- Tailwind 安全列表：确保所有配色主题的类被预生成 -->
+  <div class="hidden" aria-hidden="true">
+    <span class="from-blue-900 to-cyan-900 text-cyan-300/30 group-hover:text-cyan-300/60 bg-cyan-900/50 text-cyan-400"></span>
+    <span class="from-purple-900 to-violet-900 text-purple-300/30 group-hover:text-purple-300/60 bg-purple-900/50 text-purple-400"></span>
+    <span class="from-emerald-900 to-cyan-900 text-emerald-300/30 group-hover:text-emerald-300/60 bg-emerald-900/50 text-emerald-400"></span>
+    <span class="from-amber-900 to-orange-900 text-amber-300/30 group-hover:text-amber-300/60 bg-amber-900/50 text-amber-400"></span>
+    <span class="from-pink-900 to-rose-900 text-pink-300/30 group-hover:text-pink-300/60 bg-pink-900/50 text-pink-400"></span>
+  </div>
 
   <!-- Navbar -->
   <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-black/70 border-b border-gray-800">
@@ -89,7 +142,12 @@
         <a href="#about" class="hover:text-cyan-400 transition-colors">关于我</a>
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleAdmin()" id="admin-toggle"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-700 hover:border-cyan-400 text-sm transition-colors">
+          <i class="fas fa-sliders"></i>
+          <span class="hidden sm:inline" id="admin-toggle-label">管理</span>
+        </button>
         <a href="https://github.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">
           <i class="fab fa-github text-2xl"></i>
         </a>
@@ -111,18 +169,18 @@
       <h1 class="text-7xl md:text-8xl font-bold mb-6 neon-text">
         开源<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">记录</span>
       </h1>
-      
+
       <p class="max-w-2xl mx-auto text-2xl text-gray-400 mb-10 terminal-line">
         用代码记录成长，用开源连接世界
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="#projects" 
+        <a href="#projects"
            class="px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl font-semibold text-lg hover:scale-105 transition-transform inline-flex items-center justify-center gap-3">
           <i class="fas fa-code"></i>
           浏览开源项目
         </a>
-        <a href="#blog" 
+        <a href="#blog"
            class="px-10 py-4 border border-gray-500 hover:border-cyan-400 rounded-2xl font-semibold text-lg transition-colors">
           阅读技术记录
         </a>
@@ -170,11 +228,11 @@
 
           <div class="grid grid-cols-3 gap-6 text-center">
             <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-700">
-              <div class="text-4xl font-mono text-cyan-400">87</div>
-              <div class="text-sm text-gray-500 mt-1">开源贡献</div>
+              <div class="text-4xl font-mono text-cyan-400" id="stat-projects">0</div>
+              <div class="text-sm text-gray-500 mt-1">开源项目</div>
             </div>
             <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-700">
-              <div class="text-4xl font-mono text-purple-400">24</div>
+              <div class="text-4xl font-mono text-purple-400" id="stat-posts">0</div>
               <div class="text-sm text-gray-500 mt-1">技术文章</div>
             </div>
             <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-700">
@@ -212,72 +270,8 @@
         </a>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Project Card -->
-        <div class="card-hover bg-gray-900/50 border border-gray-700 rounded-3xl overflow-hidden group">
-          <div class="h-48 bg-gradient-to-br from-blue-900 to-cyan-900 flex items-center justify-center relative">
-            <span class="text-6xl text-cyan-300/30 group-hover:text-cyan-300/60 transition-colors">⎈</span>
-          </div>
-          <div class="p-8">
-            <div class="flex justify-between items-start">
-              <h3 class="text-2xl font-semibold">KubeEase</h3>
-              <span class="text-xs mono bg-cyan-900/50 text-cyan-400 px-3 py-1 rounded-full">Go</span>
-            </div>
-            <p class="text-gray-400 mt-3 line-clamp-2">简化 Kubernetes 部署与管理的开源工具，支持一键部署与可视化监控。</p>
-            <div class="mt-6 flex items-center justify-between text-sm">
-              <div class="flex items-center gap-1 text-amber-400">
-                <i class="fas fa-star"></i> 3.2k
-              </div>
-              <button class="text-cyan-400 hover:text-white transition-colors flex items-center gap-2">
-                <i class="fab fa-github"></i> GitHub
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Repeat two more cards -->
-        <div class="card-hover bg-gray-900/50 border border-gray-700 rounded-3xl overflow-hidden group">
-          <div class="h-48 bg-gradient-to-br from-purple-900 to-violet-900 flex items-center justify-center relative">
-            <span class="text-6xl text-purple-300/30 group-hover:text-purple-300/60 transition-colors">🤖</span>
-          </div>
-          <div class="p-8">
-            <div class="flex justify-between items-start">
-              <h3 class="text-2xl font-semibold">AgentForge</h3>
-              <span class="text-xs mono bg-purple-900/50 text-purple-400 px-3 py-1 rounded-full">Python</span>
-            </div>
-            <p class="text-gray-400 mt-3 line-clamp-2">轻量级 AI Agent 开发框架，支持多模型集成与工作流编排。</p>
-            <div class="mt-6 flex items-center justify-between text-sm">
-              <div class="flex items-center gap-1 text-amber-400">
-                <i class="fas fa-star"></i> 1.8k
-              </div>
-              <button class="text-cyan-400 hover:text-white transition-colors flex items-center gap-2">
-                <i class="fab fa-github"></i> GitHub
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-hover bg-gray-900/50 border border-gray-700 rounded-3xl overflow-hidden group">
-          <div class="h-48 bg-gradient-to-br from-emerald-900 to-cyan-900 flex items-center justify-center relative">
-            <span class="text-6xl text-emerald-300/30 group-hover:text-emerald-300/60 transition-colors">☁️</span>
-          </div>
-          <div class="p-8">
-            <div class="flex justify-between items-start">
-              <h3 class="text-2xl font-semibold">CloudDiary</h3>
-              <span class="text-xs mono bg-emerald-900/50 text-emerald-400 px-3 py-1 rounded-full">Rust</span>
-            </div>
-            <p class="text-gray-400 mt-3 line-clamp-2">高性能云原生日志采集与分析系统，专为大规模集群设计。</p>
-            <div class="mt-6 flex items-center justify-between text-sm">
-              <div class="flex items-center gap-1 text-amber-400">
-                <i class="fas fa-star"></i> 942
-              </div>
-              <button class="text-cyan-400 hover:text-white transition-colors flex items-center gap-2">
-                <i class="fab fa-github"></i> GitHub
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- 项目卡片由 JS 动态渲染 -->
+      <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </div>
   </section>
 
@@ -285,44 +279,9 @@
   <section id="blog" class="py-24">
     <div class="max-w-7xl mx-auto px-6">
       <h2 class="text-5xl font-semibold mb-12">最新记录</h2>
-      
-      <div class="space-y-8">
-        <div class="flex flex-col md:flex-row gap-8 group">
-          <div class="md:w-48 text-sm mono text-gray-500">
-            2026.05.28<br>
-            <span class="text-cyan-400">阅读 12 min</span>
-          </div>
-          <div class="flex-1">
-            <h3 class="text-2xl font-medium group-hover:text-cyan-400 transition-colors">从零实现一个高性能 Rust Web 框架</h3>
-            <p class="text-gray-400 mt-3">深入探讨 Tokio、Axum 和 Tower 的组合使用，构建一个支持中间件和异步流处理的现代 Web 框架。</p>
-            <div class="mt-4 flex gap-2">
-              <span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#Rust</span>
-              <span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#Web</span>
-            </div>
-          </div>
-        </div>
 
-        <div class="flex flex-col md:flex-row gap-8 group">
-          <div class="md:w-48 text-sm mono text-gray-500">
-            2026.05.15<br>
-            <span class="text-cyan-400">阅读 18 min</span>
-          </div>
-          <div class="flex-1">
-            <h3 class="text-2xl font-medium group-hover:text-cyan-400 transition-colors">Kubernetes Operator 开发实战：构建自定义 CRD</h3>
-            <p class="text-gray-400 mt-3">详细记录如何使用 Kubebuilder 开发一个自动化数据库管理 Operator 的全过程。</p>
-            <div class="mt-4 flex gap-2">
-              <span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#Kubernetes</span>
-              <span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#Go</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-12">
-        <button class="px-8 py-4 border border-gray-600 hover:border-cyan-400 rounded-2xl transition-colors">
-          查看全部技术记录 →
-        </button>
-      </div>
+      <!-- 技术记录由 JS 动态渲染 -->
+      <div id="blog-list" class="space-y-8"></div>
     </div>
   </section>
 
@@ -342,15 +301,383 @@
     </div>
   </footer>
 
+  <!-- 管理模式浮动工具栏 -->
+  <div id="admin-indicator"
+       class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-3 px-5 py-3 rounded-2xl bg-gray-900/90 border border-cyan-500/40 backdrop-blur-lg shadow-2xl">
+    <span class="flex items-center gap-2 text-sm text-cyan-400">
+      <span class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span> 管理模式
+    </span>
+    <span class="text-gray-600">|</span>
+    <button onclick="exportData()" class="text-sm text-gray-300 hover:text-cyan-400 transition-colors"><i class="fas fa-download mr-1"></i>导出</button>
+    <button onclick="resetData()" class="text-sm text-gray-300 hover:text-rose-400 transition-colors"><i class="fas fa-rotate-left mr-1"></i>重置</button>
+    <button onclick="toggleAdmin()" class="text-sm text-gray-300 hover:text-white transition-colors"><i class="fas fa-xmark mr-1"></i>退出</button>
+  </div>
+
+  <!-- 新增 / 编辑 弹窗 -->
+  <div id="modal-overlay" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" onclick="onOverlayClick(event)">
+    <div class="modal-card w-full max-w-lg bg-gray-900 border border-gray-700 rounded-3xl p-8 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between mb-6">
+        <h3 id="modal-title" class="text-2xl font-semibold">新增</h3>
+        <button onclick="closeModal()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-800 text-gray-400 hover:text-white transition-colors">
+          <i class="fas fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form id="modal-form" onsubmit="saveForm(event)"></form>
+      <div class="flex gap-3 mt-6">
+        <button type="button" onclick="submitForm()" class="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-semibold hover:scale-[1.02] transition-transform">
+          保存
+        </button>
+        <button type="button" onclick="closeModal()" class="px-6 py-3 border border-gray-600 hover:border-gray-400 rounded-xl transition-colors">
+          取消
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Tailwind script already loaded
-    function toggleTheme() {
-      alert("深色模式已默认开启（本原型为深色科技主题）");
+    /* =========================================================
+       开源记录 · 浏览器端增删改查（CRUD）
+       数据持久化在 localStorage，刷新不丢失。
+       ========================================================= */
+
+    // ---------- 配色主题 ----------
+    const PROJECT_THEMES = {
+      blue:    { card: 'from-blue-900 to-cyan-900',     icon: 'text-cyan-300/30 group-hover:text-cyan-300/60',     badge: 'bg-cyan-900/50 text-cyan-400' },
+      purple:  { card: 'from-purple-900 to-violet-900', icon: 'text-purple-300/30 group-hover:text-purple-300/60', badge: 'bg-purple-900/50 text-purple-400' },
+      emerald: { card: 'from-emerald-900 to-cyan-900',  icon: 'text-emerald-300/30 group-hover:text-emerald-300/60', badge: 'bg-emerald-900/50 text-emerald-400' },
+      amber:   { card: 'from-amber-900 to-orange-900',  icon: 'text-amber-300/30 group-hover:text-amber-300/60',   badge: 'bg-amber-900/50 text-amber-400' },
+      pink:    { card: 'from-pink-900 to-rose-900',     icon: 'text-pink-300/30 group-hover:text-pink-300/60',     badge: 'bg-pink-900/50 text-pink-400' },
+    };
+    const THEME_LABELS = { blue: '蓝青', purple: '紫罗兰', emerald: '翠绿', amber: '琥珀', pink: '粉红' };
+
+    // ---------- 默认内容 ----------
+    const DEFAULT_PROJECTS = [
+      { id: 'p1', title: 'KubeEase',   lang: 'Go',     stars: '3.2k', icon: '⎈',  theme: 'blue',    url: 'https://github.com', desc: '简化 Kubernetes 部署与管理的开源工具，支持一键部署与可视化监控。' },
+      { id: 'p2', title: 'AgentForge', lang: 'Python', stars: '1.8k', icon: '🤖', theme: 'purple',  url: 'https://github.com', desc: '轻量级 AI Agent 开发框架，支持多模型集成与工作流编排。' },
+      { id: 'p3', title: 'CloudDiary', lang: 'Rust',   stars: '942',  icon: '☁️', theme: 'emerald', url: 'https://github.com', desc: '高性能云原生日志采集与分析系统，专为大规模集群设计。' },
+    ];
+    const DEFAULT_BLOG = [
+      { id: 'b1', title: '从零实现一个高性能 Rust Web 框架', date: '2026.05.28', readTime: '12 min', tags: ['Rust', 'Web'], desc: '深入探讨 Tokio、Axum 和 Tower 的组合使用，构建一个支持中间件和异步流处理的现代 Web 框架。' },
+      { id: 'b2', title: 'Kubernetes Operator 开发实战：构建自定义 CRD', date: '2026.05.15', readTime: '18 min', tags: ['Kubernetes', 'Go'], desc: '详细记录如何使用 Kubebuilder 开发一个自动化数据库管理 Operator 的全过程。' },
+    ];
+
+    // ---------- 数据层 ----------
+    const STORE_KEYS = { projects: 'osr_projects_v1', blog: 'osr_blog_v1' };
+    const clone = (x) => JSON.parse(JSON.stringify(x));
+    const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+    function load(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return clone(fallback);
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : clone(fallback);
+      } catch (e) {
+        return clone(fallback);
+      }
+    }
+    function save(key, data) {
+      try { localStorage.setItem(key, JSON.stringify(data)); }
+      catch (e) { console.warn('保存失败：', e); }
     }
 
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
+    let projects = load(STORE_KEYS.projects, DEFAULT_PROJECTS);
+    let blog = load(STORE_KEYS.blog, DEFAULT_BLOG);
+    let adminMode = false;
+    let editing = { type: null, id: null };
+
+    // ---------- 工具函数 ----------
+    function escapeHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+      ));
+    }
+    function todayStr() {
+      const d = new Date();
+      const p = (n) => String(n).padStart(2, '0');
+      return d.getFullYear() + '.' + p(d.getMonth() + 1) + '.' + p(d.getDate());
+    }
+
+    // ---------- 表单配置 ----------
+    const FORMS = {
+      project: {
+        title: '项目',
+        defaults: { theme: 'blue', icon: '⎈', stars: '0', lang: 'Go', url: 'https://github.com' },
+        fields: [
+          { name: 'title', label: '项目名称', type: 'text', required: true, placeholder: '如 KubeEase' },
+          { name: 'desc',  label: '项目描述', type: 'textarea', required: true, placeholder: '一句话介绍这个项目…' },
+          { name: 'lang',  label: '语言标签', type: 'text', placeholder: '如 Go / Python / Rust' },
+          { name: 'stars', label: 'Star 数', type: 'text', placeholder: '如 3.2k' },
+          { name: 'icon',  label: '图标（emoji 或符号）', type: 'text', placeholder: '如 ⎈ 🤖 ☁️' },
+          { name: 'theme', label: '配色主题', type: 'select', options: ['blue', 'purple', 'emerald', 'amber', 'pink'] },
+          { name: 'url',   label: 'GitHub 链接', type: 'text', placeholder: 'https://github.com/...' },
+        ],
+      },
+      blog: {
+        title: '技术记录',
+        defaults: { date: todayStr(), readTime: '5 min' },
+        fields: [
+          { name: 'title',    label: '标题', type: 'text', required: true, placeholder: '文章标题' },
+          { name: 'desc',     label: '摘要', type: 'textarea', required: true, placeholder: '简要描述文章内容…' },
+          { name: 'date',     label: '日期', type: 'text', placeholder: '如 2026.05.28' },
+          { name: 'readTime', label: '阅读时长', type: 'text', placeholder: '如 12 min' },
+          { name: 'tags',     label: '标签（用逗号分隔）', type: 'text', placeholder: '如 Rust, Web' },
+        ],
+      },
+    };
+
+    // ---------- 渲染：项目 ----------
+    function projectCard(p) {
+      const t = PROJECT_THEMES[p.theme] || PROJECT_THEMES.blue;
+      return `
+        <div class="card-hover bg-gray-900/50 border border-gray-700 rounded-3xl overflow-hidden group relative">
+          ${adminControls('project', p.id)}
+          <div class="h-48 bg-gradient-to-br ${t.card} flex items-center justify-center relative">
+            <span class="text-6xl ${t.icon} transition-colors">${escapeHtml(p.icon)}</span>
+          </div>
+          <div class="p-8">
+            <div class="flex justify-between items-start gap-3">
+              <h3 class="text-2xl font-semibold">${escapeHtml(p.title)}</h3>
+              <span class="text-xs mono ${t.badge} px-3 py-1 rounded-full whitespace-nowrap">${escapeHtml(p.lang)}</span>
+            </div>
+            <p class="text-gray-400 mt-3 line-clamp-2">${escapeHtml(p.desc)}</p>
+            <div class="mt-6 flex items-center justify-between text-sm">
+              <div class="flex items-center gap-1 text-amber-400">
+                <i class="fas fa-star"></i> ${escapeHtml(p.stars)}
+              </div>
+              <a href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener"
+                 class="text-cyan-400 hover:text-white transition-colors flex items-center gap-2">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderProjects() {
+      const grid = document.getElementById('projects-grid');
+      let html = projects.map(projectCard).join('');
+      if (adminMode) {
+        html += `
+          <button onclick="openCreate('project')"
+                  class="min-h-[20rem] border-2 border-dashed border-gray-700 hover:border-cyan-400 rounded-3xl flex flex-col items-center justify-center gap-3 text-gray-500 hover:text-cyan-400 transition-colors">
+            <i class="fas fa-plus text-4xl"></i>
+            <span class="text-lg">新增项目</span>
+          </button>`;
+      } else if (projects.length === 0) {
+        html = emptyHint('还没有任何项目，点击右上角「管理」即可添加。');
+      }
+      grid.innerHTML = html;
+    }
+
+    // ---------- 渲染：技术记录 ----------
+    function blogRow(b) {
+      const tags = (b.tags || [])
+        .map((t) => `<span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#${escapeHtml(t)}</span>`)
+        .join('');
+      return `
+        <div class="flex flex-col md:flex-row gap-8 group relative">
+          ${adminControls('blog', b.id)}
+          <div class="md:w-48 text-sm mono text-gray-500">
+            ${escapeHtml(b.date)}<br>
+            <span class="text-cyan-400">阅读 ${escapeHtml(b.readTime)}</span>
+          </div>
+          <div class="flex-1 ${adminMode ? 'md:pr-24' : ''}">
+            <h3 class="text-2xl font-medium group-hover:text-cyan-400 transition-colors">${escapeHtml(b.title)}</h3>
+            <p class="text-gray-400 mt-3">${escapeHtml(b.desc)}</p>
+            <div class="mt-4 flex gap-2 flex-wrap">${tags}</div>
+          </div>
+        </div>`;
+    }
+
+    function renderBlog() {
+      const list = document.getElementById('blog-list');
+      let html = blog.map(blogRow).join('');
+      if (adminMode) {
+        html += `
+          <button onclick="openCreate('blog')"
+                  class="w-full border-2 border-dashed border-gray-700 hover:border-cyan-400 rounded-2xl py-8 flex items-center justify-center gap-3 text-gray-500 hover:text-cyan-400 transition-colors">
+            <i class="fas fa-plus text-2xl"></i>
+            <span class="text-lg">新增技术记录</span>
+          </button>`;
+      } else if (blog.length === 0) {
+        html = emptyHint('还没有任何记录，点击右上角「管理」即可添加。');
+      }
+      list.innerHTML = html;
+    }
+
+    function emptyHint(text) {
+      return `<div class="col-span-full text-center text-gray-600 py-16 border border-dashed border-gray-800 rounded-3xl">${escapeHtml(text)}</div>`;
+    }
+
+    function adminControls(type, id) {
+      if (!adminMode) return '';
+      return `
+        <div class="absolute top-3 right-3 z-20 flex gap-2">
+          <button onclick="openEdit('${type}','${id}')" class="admin-btn" title="编辑"><i class="fas fa-pen"></i></button>
+          <button onclick="removeItem('${type}','${id}')" class="admin-btn admin-btn-del" title="删除"><i class="fas fa-trash"></i></button>
+        </div>`;
+    }
+
+    function rerender() {
+      renderProjects();
+      renderBlog();
+      document.getElementById('stat-projects').textContent = projects.length;
+      document.getElementById('stat-posts').textContent = blog.length;
+    }
+
+    // ---------- 管理模式开关 ----------
+    function toggleAdmin() {
+      adminMode = !adminMode;
+      document.getElementById('admin-indicator').classList.toggle('hidden', !adminMode);
+      const toggle = document.getElementById('admin-toggle');
+      const label = document.getElementById('admin-toggle-label');
+      toggle.classList.toggle('border-cyan-400', adminMode);
+      toggle.classList.toggle('text-cyan-400', adminMode);
+      label.textContent = adminMode ? '完成' : '管理';
+      rerender();
+    }
+
+    // ---------- 弹窗：新增 / 编辑 ----------
+    function openCreate(type) {
+      editing = { type, id: null };
+      buildForm(type, clone(FORMS[type].defaults || {}));
+      document.getElementById('modal-title').textContent = '新增' + FORMS[type].title;
+      showModal();
+    }
+
+    function openEdit(type, id) {
+      const item = (type === 'project' ? projects : blog).find((x) => x.id === id);
+      if (!item) return;
+      editing = { type, id };
+      const data = clone(item);
+      if (type === 'blog') data.tags = (item.tags || []).join(', ');
+      buildForm(type, data);
+      document.getElementById('modal-title').textContent = '编辑' + FORMS[type].title;
+      showModal();
+    }
+
+    function buildForm(type, data) {
+      const form = document.getElementById('modal-form');
+      form.innerHTML = FORMS[type].fields.map((f) => {
+        const val = data[f.name] != null ? data[f.name] : '';
+        let control;
+        if (f.type === 'textarea') {
+          control = `<textarea name="${f.name}" rows="3" class="form-input" ${f.required ? 'required' : ''} placeholder="${escapeHtml(f.placeholder || '')}">${escapeHtml(val)}</textarea>`;
+        } else if (f.type === 'select') {
+          const opts = f.options
+            .map((o) => `<option value="${o}" ${o === val ? 'selected' : ''}>${THEME_LABELS[o] || o}</option>`)
+            .join('');
+          control = `<select name="${f.name}" class="form-input">${opts}</select>`;
+        } else {
+          control = `<input name="${f.name}" type="text" class="form-input" ${f.required ? 'required' : ''} value="${escapeHtml(val)}" placeholder="${escapeHtml(f.placeholder || '')}">`;
+        }
+        const star = f.required ? ' <span class="text-pink-400">*</span>' : '';
+        return `
+          <label class="block mb-4">
+            <span class="block text-sm text-gray-400 mb-1.5">${f.label}${star}</span>
+            ${control}
+          </label>`;
+      }).join('');
+    }
+
+    function submitForm() {
+      document.getElementById('modal-form').requestSubmit();
+    }
+
+    function saveForm(e) {
+      e.preventDefault();
+      const { type, id } = editing;
+      if (!type) return;
+
+      const fd = new FormData(document.getElementById('modal-form'));
+      const obj = {};
+      fd.forEach((v, k) => { obj[k] = typeof v === 'string' ? v.trim() : v; });
+
+      if (type === 'blog') {
+        obj.tags = obj.tags ? obj.tags.split(/[,，]/).map((s) => s.trim()).filter(Boolean) : [];
+      }
+
+      const list = type === 'project' ? projects : blog;
+      if (id) {
+        const idx = list.findIndex((x) => x.id === id);
+        if (idx !== -1) list[idx] = Object.assign({}, list[idx], obj);
+      } else {
+        obj.id = uid();
+        list.push(obj);
+      }
+
+      persist(type);
+      closeModal();
+      rerender();
+    }
+
+    // ---------- 删除 ----------
+    function removeItem(type, id) {
+      const list = type === 'project' ? projects : blog;
+      const item = list.find((x) => x.id === id);
+      const name = item ? (item.title || '这一项') : '这一项';
+      if (!confirm('确定要删除「' + name + '」吗？此操作不可恢复。')) return;
+      if (type === 'project') projects = projects.filter((x) => x.id !== id);
+      else blog = blog.filter((x) => x.id !== id);
+      persist(type);
+      rerender();
+    }
+
+    function persist(type) {
+      if (type === 'project') save(STORE_KEYS.projects, projects);
+      else save(STORE_KEYS.blog, blog);
+    }
+
+    // ---------- 导出 / 重置 ----------
+    function exportData() {
+      const data = JSON.stringify({ projects, blog }, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'open-source-records.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetData() {
+      if (!confirm('确定恢复为默认内容吗？你添加和修改的所有数据都会被清除。')) return;
+      projects = clone(DEFAULT_PROJECTS);
+      blog = clone(DEFAULT_BLOG);
+      persist('project');
+      persist('blog');
+      rerender();
+    }
+
+    // ---------- 弹窗显隐 ----------
+    function showModal() {
+      document.getElementById('modal-overlay').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    function onOverlayClick(e) {
+      if (e.target.id === 'modal-overlay') closeModal();
+    }
+
+    // ---------- 主题切换（占位） ----------
+    function toggleTheme() {
+      alert('深色模式已默认开启（本原型为深色科技主题）');
+    }
+
+    // ---------- 事件绑定 ----------
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', function (e) {
         if (this.getAttribute('href') !== '#') {
           e.preventDefault();
           const target = document.querySelector(this.getAttribute('href'));
@@ -359,8 +686,11 @@
       });
     });
 
-    // 简单的粒子背景提示
-    console.log("%c欢迎来到「开源 记录」科技原型", "color:#00f0ff; font-family:monospace; font-size:14px");
+    // 初始渲染
+    rerender();
+
+    console.log('%c欢迎来到「开源 记录」科技原型', 'color:#00f0ff; font-family:monospace; font-size:14px');
+    console.log('%c提示：点击右上角「管理」即可对项目和记录进行增删改查。', 'color:#a855f7; font-family:monospace;');
   </script>
 </body>
 </html>
