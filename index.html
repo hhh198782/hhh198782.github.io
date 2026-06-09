@@ -1,9 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>开源 记录 | Open Source Records</title>
+  <meta name="description" content="开源记录 —— 海华的开源项目与技术记录。专注后端开发、分布式系统、AI 工具链与云原生技术。">
+  <meta name="author" content="海华">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta property="og:title" content="开源 记录 | Open Source Records">
+  <meta property="og:description" content="用代码记录成长，用开源连接世界。">
+  <meta property="og:type" content="website">
+
+  <!-- 在样式加载前确定主题，避免刷新闪烁(FOUC) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        document.documentElement.setAttribute('data-theme', saved || (prefersLight ? 'light' : 'dark'));
+      } catch (e) { /* localStorage 不可用时回退到默认深色 */ }
+    })();
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
@@ -12,18 +30,80 @@
     :root {
       --neon-blue: #00f0ff;
       --neon-purple: #a855f7;
+
+      /* 深色主题（默认） */
+      --bg: #0a0a0a;
+      --bg-soft: #050507;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --text-faint: #6b7280;
+      --card-bg: rgba(17, 24, 39, 0.5);
+      --border: #1f2937;
+      --border-soft: #374151;
+      --nav-bg: rgba(0, 0, 0, 0.7);
+      --hero-from: #1a1a2e;
+      --hero-to: #0a0a0a;
+      --chip-bg: #111827;
+      --tag-bg: #1f2937;
+      --footer-bg: #000000;
+      --neon-text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 40px var(--neon-purple);
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f6f8fb;
+      --bg-soft: #eef2f7;
+      --text: #1f2937;
+      --text-muted: #4b5563;
+      --text-faint: #6b7280;
+      --card-bg: rgba(255, 255, 255, 0.82);
+      --border: #e2e8f0;
+      --border-soft: #cbd5e1;
+      --nav-bg: rgba(255, 255, 255, 0.82);
+      --hero-from: #e0e7ff;
+      --hero-to: #f6f8fb;
+      --chip-bg: #ffffff;
+      --tag-bg: #eef2f7;
+      --footer-bg: #eef2f7;
+      --neon-text-shadow: 0 0 1px rgba(15, 23, 42, 0.15);
     }
 
     body {
       font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
-    
+
+    body,
+    .surface,
+    .glass,
+    .nav-glass,
+    .footer-bg,
+    .section-alt,
+    .chip,
+    .tag,
+    .proj-card,
+    .rec-tag {
+      transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+    }
+
     .mono {
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* 主题感知的语义化表面/边框 */
+    .glass { background: var(--card-bg); }
+    .surface { background: var(--card-bg); border-color: var(--border-soft); }
+    .bordered { border-color: var(--border); }
+    .nav-glass { background: var(--nav-bg); }
+    .section-alt { background: var(--bg-soft); }
+    .chip { background: var(--chip-bg); }
+    .tag { background: var(--tag-bg); }
+    .footer-bg { background: var(--footer-bg); }
+    .text-muted { color: var(--text-muted); }
+    .text-faint { color: var(--text-faint); }
+
     .hero-bg {
-      background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0a 70%);
+      background: radial-gradient(circle at center, var(--hero-from) 0%, var(--hero-to) 70%);
       position: relative;
       overflow: hidden;
     }
@@ -35,7 +115,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: 
+      background:
         linear-gradient(transparent, rgba(0, 240, 255, 0.03)),
         repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168, 85, 247, 0.03) 2px, rgba(168, 85, 247, 0.03) 4px);
       animation: grid-move 25s linear infinite;
@@ -47,16 +127,13 @@
     }
 
     .neon-text {
-      text-shadow: 
-        0 0 10px var(--neon-blue),
-        0 0 20px var(--neon-blue),
-        0 0 40px var(--neon-purple);
+      text-shadow: var(--neon-text-shadow);
     }
 
     .card-hover {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .card-hover:hover {
       transform: translateY(-12px);
       box-shadow: 0 0 30px -5px rgb(0 240 255 / 0.5);
@@ -67,12 +144,113 @@
       overflow: hidden;
       white-space: nowrap;
     }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--neon-blue);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    /* ============================================================
+       动态渲染的「项目卡片 / 技术记录」样式
+       —— 由 data/*.json 通过 JS 渲染，故用独立 CSS（不依赖
+       Tailwind 的按需生成），保证内容动态注入后依然正确上色。
+       ============================================================ */
+    .proj-card {
+      display: flex;
+      flex-direction: column;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      background: var(--card-bg);
+      border: 1px solid var(--border-soft);
+      /* 默认主题：cyan */
+      --ga: #1e3a8a; --gb: #164e63; --accent: 103, 232, 249;
+      --bbg: rgba(8, 145, 178, 0.20); --bfg: #67e8f9;
+    }
+    .proj-card[data-c="purple"]  { --ga: #581c87; --gb: #4c1d95; --accent: 216, 180, 254; --bbg: rgba(147, 51, 234, 0.20); --bfg: #d8b4fe; }
+    .proj-card[data-c="emerald"] { --ga: #064e3b; --gb: #164e63; --accent: 110, 231, 183; --bbg: rgba(16, 185, 129, 0.20); --bfg: #6ee7b7; }
+    .proj-card[data-c="sky"]     { --ga: #0c4a6e; --gb: #312e81; --accent: 125, 211, 252; --bbg: rgba(2, 132, 199, 0.20);  --bfg: #7dd3fc; }
+    .proj-card[data-c="fuchsia"] { --ga: #701a75; --gb: #581c87; --accent: 240, 171, 252; --bbg: rgba(192, 38, 211, 0.20); --bfg: #f0abfc; }
+    .proj-card[data-c="amber"]   { --ga: #78350f; --gb: #7c2d12; --accent: 252, 211, 77;  --bbg: rgba(217, 119, 6, 0.20);  --bfg: #fcd34d; }
+
+    .proj-card .card-head {
+      height: 12rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--ga), var(--gb));
+    }
+    .proj-card .card-icon {
+      font-size: 3.75rem;
+      line-height: 1;
+      color: rgba(var(--accent), 0.32);
+      transition: color 0.3s ease;
+    }
+    .proj-card:hover .card-icon { color: rgba(var(--accent), 0.62); }
+    .proj-card .card-body { padding: 2rem; }
+    .proj-card .card-titlerow { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
+    .proj-card .card-title { font-size: 1.5rem; font-weight: 600; }
+    .proj-card .card-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      white-space: nowrap;
+      background: var(--bbg);
+      color: var(--bfg);
+    }
+    .proj-card .card-desc {
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .proj-card .card-meta { margin-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.875rem; }
+    .proj-card .card-stars { display: flex; align-items: center; gap: 0.25rem; color: #fbbf24; }
+    .proj-card .card-link { display: flex; align-items: center; gap: 0.5rem; color: var(--neon-blue); transition: color 0.2s ease; }
+    .proj-card .card-link:hover { color: #a5f3fc; }
+
+    .rec-item { display: flex; flex-direction: column; gap: 2rem; }
+    .rec-date { font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: var(--text-faint); }
+    .rec-read { color: var(--neon-blue); }
+    .rec-body { flex: 1; }
+    .rec-title { font-size: 1.5rem; font-weight: 500; transition: color 0.2s ease; }
+    .rec-item:hover .rec-title { color: var(--neon-blue); }
+    .rec-summary { color: var(--text-muted); margin-top: 0.75rem; }
+    .rec-tags { margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .rec-tag { font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 9999px; background: var(--tag-bg); }
+    @media (min-width: 768px) {
+      .rec-item { flex-direction: row; }
+      .rec-date { width: 12rem; flex: none; }
+    }
+
+    /* 尊重「减少动态效果」的系统偏好 */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-bg::before { animation: none; }
+      .terminal-line { animation: none; white-space: normal; }
+      .card-hover, .proj-card .card-icon, .rec-title { transition: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* 小屏避免打字机动画把文案截断 */
+    @media (max-width: 640px) {
+      .terminal-line { white-space: normal; animation: none; }
+    }
   </style>
 </head>
-<body class="bg-[#0a0a0a] text-gray-200">
+<body>
 
   <!-- Navbar -->
-  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-black/70 border-b border-gray-800">
+  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg nav-glass border-b bordered">
     <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center text-white font-bold text-xl">⎇</div>
@@ -89,21 +267,32 @@
         <a href="#about" class="hover:text-cyan-400 transition-colors">关于我</a>
       </div>
 
-      <div class="flex items-center gap-4">
-        <a href="https://github.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/hhh198782" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 上查看主页" class="text-muted hover:text-cyan-400 transition-colors">
           <i class="fab fa-github text-2xl"></i>
         </a>
-        <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-800 transition-colors">
-          <i class="fas fa-moon text-lg"></i>
+        <button onclick="toggleTheme()" aria-label="切换深色 / 浅色模式" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-500/10 transition-colors">
+          <i id="theme-icon" class="fas fa-moon text-lg"></i>
+        </button>
+        <button id="menu-btn" aria-label="打开导航菜单" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-500/10 transition-colors">
+          <i id="menu-icon" class="fas fa-bars text-lg"></i>
         </button>
       </div>
+    </div>
+
+    <!-- 移动端菜单 -->
+    <div id="mobile-menu" class="hidden md:hidden border-t bordered nav-glass px-6 py-4 space-y-3 text-sm font-medium">
+      <a href="#home" class="block py-1 hover:text-cyan-400 transition-colors">首页</a>
+      <a href="#projects" class="block py-1 hover:text-cyan-400 transition-colors">开源项目</a>
+      <a href="#blog" class="block py-1 hover:text-cyan-400 transition-colors">技术记录</a>
+      <a href="#about" class="block py-1 hover:text-cyan-400 transition-colors">关于我</a>
     </div>
   </nav>
 
   <!-- Hero -->
   <section id="home" class="hero-bg min-h-screen flex items-center pt-20 relative">
     <div class="max-w-7xl mx-auto px-6 py-24 text-center relative z-10">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-black/50 mb-6">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 glass mb-6">
         <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
         <span class="mono text-xs tracking-widest text-cyan-400">ALWAYS OPEN SOURCE</span>
       </div>
@@ -111,24 +300,24 @@
       <h1 class="text-7xl md:text-8xl font-bold mb-6 neon-text">
         开源<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">记录</span>
       </h1>
-      
-      <p class="max-w-2xl mx-auto text-2xl text-gray-400 mb-10 terminal-line">
+
+      <p class="max-w-2xl mx-auto text-2xl text-muted mb-10 terminal-line">
         用代码记录成长，用开源连接世界
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="#projects" 
-           class="px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl font-semibold text-lg hover:scale-105 transition-transform inline-flex items-center justify-center gap-3">
+        <a href="#projects"
+           class="px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-2xl font-semibold text-lg hover:scale-105 transition-transform inline-flex items-center justify-center gap-3">
           <i class="fas fa-code"></i>
           浏览开源项目
         </a>
-        <a href="#blog" 
+        <a href="#blog"
            class="px-10 py-4 border border-gray-500 hover:border-cyan-400 rounded-2xl font-semibold text-lg transition-colors">
           阅读技术记录
         </a>
       </div>
 
-      <div class="mt-20 text-cyan-400/60 text-sm mono flex items-center justify-center gap-8">
+      <div class="mt-20 text-cyan-400/70 text-sm mono flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
         <div>★ 128k+ Stars</div>
         <div>● 47 Repositories</div>
         <div>⌛ 3.2 Years Coding</div>
@@ -137,7 +326,7 @@
 
     <!-- 底部扫描线 -->
     <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
-      <div class="text-xs mono tracking-widest mb-2 text-cyan-400/50">SCROLL TO EXPLORE</div>
+      <div class="text-xs mono tracking-widest mb-2 text-cyan-400/60">SCROLL TO EXPLORE</div>
       <div class="w-6 h-10 border-2 border-cyan-400/30 rounded-full flex justify-center pt-2">
         <div class="w-1 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
       </div>
@@ -145,16 +334,16 @@
   </section>
 
   <!-- About -->
-  <section id="about" class="py-24 border-t border-gray-800">
+  <section id="about" class="py-24 border-t bordered">
     <div class="max-w-7xl mx-auto px-6">
       <div class="grid md:grid-cols-2 gap-16 items-center">
         <div>
-          <div class="w-full aspect-square bg-gradient-to-br from-purple-900/50 to-cyan-900/30 rounded-3xl overflow-hidden border border-gray-700">
+          <div class="w-full aspect-square bg-gradient-to-br from-purple-900/50 to-cyan-900/30 rounded-3xl overflow-hidden border bordered">
             <div class="w-full h-full bg-[url('https://picsum.photos/id/1015/800/800')] bg-cover bg-center relative">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
               <div class="absolute bottom-8 left-8">
                 <div class="text-cyan-400 text-sm mono">TECH DEVELOPER</div>
-                <div class="text-4xl font-bold">海华</div>
+                <div class="text-4xl font-bold text-white">海华</div>
               </div>
             </div>
           </div>
@@ -163,35 +352,35 @@
         <div class="space-y-8">
           <div>
             <h2 class="text-5xl font-semibold mb-6">你好，我是海华<span class="text-cyan-400">开源爱好者</span></h2>
-            <p class="text-gray-400 text-lg leading-relaxed">
+            <p class="text-muted text-lg leading-relaxed">
               专注后端开发与开源生态，热爱探索新技术。已参与多个开源项目，专注于分布式系统、AI 工具链与云原生技术。
             </p>
           </div>
 
           <div class="grid grid-cols-3 gap-6 text-center">
-            <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-700">
+            <div class="surface rounded-2xl p-6 border">
               <div class="text-4xl font-mono text-cyan-400">87</div>
-              <div class="text-sm text-gray-500 mt-1">开源贡献</div>
+              <div class="text-sm text-faint mt-1">开源贡献</div>
             </div>
-            <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-700">
+            <div class="surface rounded-2xl p-6 border">
               <div class="text-4xl font-mono text-purple-400">24</div>
-              <div class="text-sm text-gray-500 mt-1">技术文章</div>
+              <div class="text-sm text-faint mt-1">技术文章</div>
             </div>
-            <div class="bg-gray-900/50 rounded-2xl p-6 border border-gray-700">
+            <div class="surface rounded-2xl p-6 border">
               <div class="text-4xl font-mono text-emerald-400">12</div>
-              <div class="text-sm text-gray-500 mt-1">星标项目</div>
+              <div class="text-sm text-faint mt-1">星标项目</div>
             </div>
           </div>
 
           <div>
             <h3 class="text-xl font-medium mb-4">技术栈</h3>
             <div class="flex flex-wrap gap-3">
-              <span class="px-4 py-2 bg-gray-900 border border-cyan-500/30 text-cyan-400 rounded-full text-sm">Go</span>
-              <span class="px-4 py-2 bg-gray-900 border border-purple-500/30 text-purple-400 rounded-full text-sm">Rust</span>
-              <span class="px-4 py-2 bg-gray-900 border border-blue-500/30 text-blue-400 rounded-full text-sm">Kubernetes</span>
-              <span class="px-4 py-2 bg-gray-900 border border-emerald-500/30 text-emerald-400 rounded-full text-sm">Next.js</span>
-              <span class="px-4 py-2 bg-gray-900 border border-amber-500/30 text-amber-400 rounded-full text-sm">AI Agents</span>
-              <span class="px-4 py-2 bg-gray-900 border border-pink-500/30 text-pink-400 rounded-full text-sm">TypeScript</span>
+              <span class="px-4 py-2 glass border border-cyan-500/30 text-cyan-400 rounded-full text-sm">Go</span>
+              <span class="px-4 py-2 glass border border-purple-500/30 text-purple-400 rounded-full text-sm">Rust</span>
+              <span class="px-4 py-2 glass border border-blue-500/30 text-blue-400 rounded-full text-sm">Kubernetes</span>
+              <span class="px-4 py-2 glass border border-emerald-500/30 text-emerald-400 rounded-full text-sm">Next.js</span>
+              <span class="px-4 py-2 glass border border-amber-500/30 text-amber-400 rounded-full text-sm">AI Agents</span>
+              <span class="px-4 py-2 glass border border-pink-500/30 text-pink-400 rounded-full text-sm">TypeScript</span>
             </div>
           </div>
         </div>
@@ -200,83 +389,21 @@
   </section>
 
   <!-- Projects -->
-  <section id="projects" class="py-24 bg-black border-t border-b border-gray-800">
+  <section id="projects" class="py-24 section-alt border-t border-b bordered">
     <div class="max-w-7xl mx-auto px-6">
       <div class="flex justify-between items-end mb-12">
         <div>
           <span class="mono text-cyan-400 text-sm">FEATURED</span>
           <h2 class="text-5xl font-semibold">开源项目</h2>
         </div>
-        <a href="#" class="text-cyan-400 hover:underline flex items-center gap-2">
+        <a href="https://github.com/hhh198782?tab=repositories" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline flex items-center gap-2">
           查看全部 <i class="fas fa-arrow-right"></i>
         </a>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Project Card -->
-        <div class="card-hover bg-gray-900/50 border border-gray-700 rounded-3xl overflow-hidden group">
-          <div class="h-48 bg-gradient-to-br from-blue-900 to-cyan-900 flex items-center justify-center relative">
-            <span class="text-6xl text-cyan-300/30 group-hover:text-cyan-300/60 transition-colors">⎈</span>
-          </div>
-          <div class="p-8">
-            <div class="flex justify-between items-start">
-              <h3 class="text-2xl font-semibold">KubeEase</h3>
-              <span class="text-xs mono bg-cyan-900/50 text-cyan-400 px-3 py-1 rounded-full">Go</span>
-            </div>
-            <p class="text-gray-400 mt-3 line-clamp-2">简化 Kubernetes 部署与管理的开源工具，支持一键部署与可视化监控。</p>
-            <div class="mt-6 flex items-center justify-between text-sm">
-              <div class="flex items-center gap-1 text-amber-400">
-                <i class="fas fa-star"></i> 3.2k
-              </div>
-              <button class="text-cyan-400 hover:text-white transition-colors flex items-center gap-2">
-                <i class="fab fa-github"></i> GitHub
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Repeat two more cards -->
-        <div class="card-hover bg-gray-900/50 border border-gray-700 rounded-3xl overflow-hidden group">
-          <div class="h-48 bg-gradient-to-br from-purple-900 to-violet-900 flex items-center justify-center relative">
-            <span class="text-6xl text-purple-300/30 group-hover:text-purple-300/60 transition-colors">🤖</span>
-          </div>
-          <div class="p-8">
-            <div class="flex justify-between items-start">
-              <h3 class="text-2xl font-semibold">AgentForge</h3>
-              <span class="text-xs mono bg-purple-900/50 text-purple-400 px-3 py-1 rounded-full">Python</span>
-            </div>
-            <p class="text-gray-400 mt-3 line-clamp-2">轻量级 AI Agent 开发框架，支持多模型集成与工作流编排。</p>
-            <div class="mt-6 flex items-center justify-between text-sm">
-              <div class="flex items-center gap-1 text-amber-400">
-                <i class="fas fa-star"></i> 1.8k
-              </div>
-              <button class="text-cyan-400 hover:text-white transition-colors flex items-center gap-2">
-                <i class="fab fa-github"></i> GitHub
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-hover bg-gray-900/50 border border-gray-700 rounded-3xl overflow-hidden group">
-          <div class="h-48 bg-gradient-to-br from-emerald-900 to-cyan-900 flex items-center justify-center relative">
-            <span class="text-6xl text-emerald-300/30 group-hover:text-emerald-300/60 transition-colors">☁️</span>
-          </div>
-          <div class="p-8">
-            <div class="flex justify-between items-start">
-              <h3 class="text-2xl font-semibold">CloudDiary</h3>
-              <span class="text-xs mono bg-emerald-900/50 text-emerald-400 px-3 py-1 rounded-full">Rust</span>
-            </div>
-            <p class="text-gray-400 mt-3 line-clamp-2">高性能云原生日志采集与分析系统，专为大规模集群设计。</p>
-            <div class="mt-6 flex items-center justify-between text-sm">
-              <div class="flex items-center gap-1 text-amber-400">
-                <i class="fas fa-star"></i> 942
-              </div>
-              <button class="text-cyan-400 hover:text-white transition-colors flex items-center gap-2">
-                <i class="fab fa-github"></i> GitHub
-              </button>
-            </div>
-          </div>
-        </div>
+      <!-- 项目卡片由 data/projects.json 动态渲染 -->
+      <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <p class="text-muted col-span-full text-center py-8">正在加载项目…</p>
       </div>
     </div>
   </section>
@@ -285,81 +412,175 @@
   <section id="blog" class="py-24">
     <div class="max-w-7xl mx-auto px-6">
       <h2 class="text-5xl font-semibold mb-12">最新记录</h2>
-      
-      <div class="space-y-8">
-        <div class="flex flex-col md:flex-row gap-8 group">
-          <div class="md:w-48 text-sm mono text-gray-500">
-            2026.05.28<br>
-            <span class="text-cyan-400">阅读 12 min</span>
-          </div>
-          <div class="flex-1">
-            <h3 class="text-2xl font-medium group-hover:text-cyan-400 transition-colors">从零实现一个高性能 Rust Web 框架</h3>
-            <p class="text-gray-400 mt-3">深入探讨 Tokio、Axum 和 Tower 的组合使用，构建一个支持中间件和异步流处理的现代 Web 框架。</p>
-            <div class="mt-4 flex gap-2">
-              <span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#Rust</span>
-              <span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#Web</span>
-            </div>
-          </div>
-        </div>
 
-        <div class="flex flex-col md:flex-row gap-8 group">
-          <div class="md:w-48 text-sm mono text-gray-500">
-            2026.05.15<br>
-            <span class="text-cyan-400">阅读 18 min</span>
-          </div>
-          <div class="flex-1">
-            <h3 class="text-2xl font-medium group-hover:text-cyan-400 transition-colors">Kubernetes Operator 开发实战：构建自定义 CRD</h3>
-            <p class="text-gray-400 mt-3">详细记录如何使用 Kubebuilder 开发一个自动化数据库管理 Operator 的全过程。</p>
-            <div class="mt-4 flex gap-2">
-              <span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#Kubernetes</span>
-              <span class="text-xs px-3 py-1 bg-gray-800 rounded-full">#Go</span>
-            </div>
-          </div>
-        </div>
+      <!-- 技术记录由 data/records.json 动态渲染 -->
+      <div id="records-list" class="space-y-8">
+        <p class="text-muted py-8">正在加载记录…</p>
       </div>
 
       <div class="text-center mt-12">
-        <button class="px-8 py-4 border border-gray-600 hover:border-cyan-400 rounded-2xl transition-colors">
+        <a href="https://github.com/hhh198782" target="_blank" rel="noopener noreferrer" class="inline-block px-8 py-4 border border-gray-500 hover:border-cyan-400 rounded-2xl transition-colors">
           查看全部技术记录 →
-        </button>
+        </a>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-black border-t border-gray-800 py-16">
+  <footer class="footer-bg border-t bordered py-16">
     <div class="max-w-7xl mx-auto px-6">
       <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="text-gray-500 mono text-sm">
+        <div class="text-faint mono text-sm">
           © 2026 开源记录 · Made with passion and coffee
         </div>
-        <div class="flex gap-6 mt-6 md:mt-0">
-          <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fab fa-github text-2xl"></i></a>
-          <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fab fa-x-twitter text-2xl"></i></a>
-          <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fab fa-bilibili text-2xl"></i></a>
+        <div class="flex gap-6 mt-6 md:mt-0 text-muted">
+          <a href="https://github.com/hhh198782" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="hover:text-cyan-400 transition-colors"><i class="fab fa-github text-2xl"></i></a>
+          <a href="#" aria-label="X (Twitter)" class="hover:text-cyan-400 transition-colors"><i class="fab fa-x-twitter text-2xl"></i></a>
+          <a href="#" aria-label="哔哩哔哩" class="hover:text-cyan-400 transition-colors"><i class="fab fa-bilibili text-2xl"></i></a>
         </div>
       </div>
     </div>
   </footer>
 
   <script>
-    // Tailwind script already loaded
-    function toggleTheme() {
-      alert("深色模式已默认开启（本原型为深色科技主题）");
-    }
+    // ---- 主题切换：持久化到 localStorage，同步图标与浏览器主题色 ----
+    (function () {
+      const root = document.documentElement;
 
-    // Smooth scroll
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        const icon = document.getElementById('theme-icon');
+        if (icon) {
+          icon.className = (theme === 'light' ? 'fas fa-sun' : 'fas fa-moon') + ' text-lg';
+        }
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#f6f8fb' : '#0a0a0a');
+      }
+
+      applyTheme(root.getAttribute('data-theme') || 'dark');
+
+      window.toggleTheme = function () {
+        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        try { localStorage.setItem('theme', next); } catch (e) { /* 忽略存储异常 */ }
+        applyTheme(next);
+      };
+    })();
+
+    // ---- 移动端菜单开合 ----
+    (function () {
+      const btn = document.getElementById('menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (!btn || !menu) return;
+
+      function setOpen(open) {
+        menu.classList.toggle('hidden', !open);
+        btn.setAttribute('aria-expanded', String(open));
+        btn.setAttribute('aria-label', open ? '关闭导航菜单' : '打开导航菜单');
+        if (icon) icon.className = (open ? 'fas fa-xmark' : 'fas fa-bars') + ' text-lg';
+      }
+
+      btn.addEventListener('click', function () { setOpen(menu.classList.contains('hidden')); });
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () { setOpen(false); });
+      });
+    })();
+
+    // ---- 锚点平滑滚动 ----
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        if (this.getAttribute('href') !== '#') {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          if (target) target.scrollIntoView({ behavior: 'smooth' });
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
         }
       });
     });
 
-    // 简单的粒子背景提示
+    // ---- 从 data/*.json 渲染「开源项目 / 技术记录」----
+    (function () {
+      const THEMES = ['cyan', 'purple', 'emerald', 'sky', 'fuchsia', 'amber'];
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[m]));
+      }
+      function safeUrl(u) {
+        u = String(u || '');
+        return /^https?:\/\//i.test(u) ? u : '#';
+      }
+
+      function renderProjects(list) {
+        const el = document.getElementById('projects-grid');
+        if (!el) return;
+        if (!Array.isArray(list) || !list.length) {
+          el.innerHTML = '<p class="text-muted col-span-full text-center py-8">暂无项目</p>';
+          return;
+        }
+        el.innerHTML = list.map(p => {
+          const c = THEMES.indexOf(p.theme) >= 0 ? p.theme : 'cyan';
+          return `<div class="card-hover proj-card" data-c="${c}">
+            <div class="card-head"><span class="card-icon">${esc(p.icon || '★')}</span></div>
+            <div class="card-body">
+              <div class="card-titlerow">
+                <h3 class="card-title">${esc(p.name)}</h3>
+                <span class="card-badge">${esc(p.lang)}</span>
+              </div>
+              <p class="card-desc">${esc(p.desc)}</p>
+              <div class="card-meta">
+                <div class="card-stars"><i class="fas fa-star"></i> ${esc(p.stars)}</div>
+                <a class="card-link" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 查看 ${esc(p.name)}"><i class="fab fa-github"></i> GitHub</a>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      function renderRecords(list) {
+        const el = document.getElementById('records-list');
+        if (!el) return;
+        if (!Array.isArray(list) || !list.length) {
+          el.innerHTML = '<p class="text-muted py-8">暂无记录</p>';
+          return;
+        }
+        el.innerHTML = list.map(r => {
+          const tags = Array.isArray(r.tags)
+            ? r.tags
+            : String(r.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+          return `<article class="rec-item">
+            <div class="rec-date">${esc(r.date)}<br><span class="rec-read">阅读 ${esc(r.readingTime)}</span></div>
+            <div class="rec-body">
+              <h3 class="rec-title">${esc(r.title)}</h3>
+              <p class="rec-summary">${esc(r.summary)}</p>
+              <div class="rec-tags">${tags.map(t => `<span class="rec-tag">#${esc(t)}</span>`).join('')}</div>
+            </div>
+          </article>`;
+        }).join('');
+      }
+
+      function load(url) {
+        return fetch(url, { cache: 'no-store' }).then(res => {
+          if (!res.ok) throw new Error(url + ' -> ' + res.status);
+          return res.json();
+        });
+      }
+
+      load('data/projects.json').then(renderProjects).catch(err => {
+        console.error(err);
+        const el = document.getElementById('projects-grid');
+        if (el) el.innerHTML = '<p class="text-muted col-span-full text-center py-8">项目加载失败。</p>';
+      });
+      load('data/records.json').then(renderRecords).catch(err => {
+        console.error(err);
+        const el = document.getElementById('records-list');
+        if (el) el.innerHTML = '<p class="text-muted py-8">记录加载失败。</p>';
+      });
+    })();
+
     console.log("%c欢迎来到「开源 记录」科技原型", "color:#00f0ff; font-family:monospace; font-size:14px");
   </script>
 </body>
