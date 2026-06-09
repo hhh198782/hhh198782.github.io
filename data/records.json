@@ -1,0 +1,23 @@
+[
+  {
+    "title": "从零实现一个高性能 Rust Web 框架",
+    "date": "2026.05.28",
+    "readingTime": "12 min",
+    "summary": "深入探讨 Tokio、Axum 和 Tower 的组合使用，构建一个支持中间件和异步流处理的现代 Web 框架。",
+    "tags": ["Rust", "Web"]
+  },
+  {
+    "title": "Kubernetes Operator 开发实战：构建自定义 CRD",
+    "date": "2026.05.15",
+    "readingTime": "18 min",
+    "summary": "详细记录如何使用 Kubebuilder 开发一个自动化数据库管理 Operator 的全过程。",
+    "tags": ["Kubernetes", "Go"]
+  },
+  {
+    "title": "用 eBPF 打造零侵入的服务可观测性",
+    "date": "2026.04.30",
+    "readingTime": "15 min",
+    "summary": "不改一行业务代码，借助 eBPF 在内核态采集网络与系统调用指标，构建低开销的全链路观测方案。",
+    "tags": ["eBPF", "Observability"]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "name": "KubeEase",
+    "lang": "Go",
+    "theme": "cyan",
+    "icon": "⎈",
+    "stars": "3.2k",
+    "desc": "简化 Kubernetes 部署与管理的开源工具，支持一键部署与可视化监控。",
+    "url": "https://github.com/hhh198782"
+  },
+  {
+    "name": "AgentForge",
+    "lang": "Python",
+    "theme": "purple",
+    "icon": "🤖",
+    "stars": "1.8k",
+    "desc": "轻量级 AI Agent 开发框架，支持多模型集成与工作流编排。",
+    "url": "https://github.com/hhh198782"
+  },
+  {
+    "name": "CloudDiary",
+    "lang": "Rust",
+    "theme": "emerald",
+    "icon": "☁️",
+    "stars": "942",
+    "desc": "高性能云原生日志采集与分析系统，专为大规模集群设计。",
+    "url": "https://github.com/hhh198782"
+  },
+  {
+    "name": "EdgeMesh",
+    "lang": "Go",
+    "theme": "sky",
+    "icon": "🕸️",
+    "stars": "756",
+    "desc": "面向边缘计算的轻量服务网格，提供就近路由、断流自愈与统一可观测性。",
+    "url": "https://github.com/hhh198782"
+  },
+  {
+    "name": "PromptLab",
+    "lang": "Python",
+    "theme": "fuchsia",
+    "icon": "🧪",
+    "stars": "1.3k",
+    "desc": "面向大模型的提示词实验与评测平台，支持版本管理、A/B 对比与自动打分。",
+    "url": "https://github.com/hhh198782"
+  },
+  {
+    "name": "TraceFlow",
+    "lang": "Rust",
+    "theme": "amber",
+    "icon": "📈",
+    "stars": "624",
+    "desc": "分布式链路追踪与可观测性后端，兼容 OpenTelemetry，低开销采集海量 Span。",
+    "url": "https://github.com/hhh198782"
+  }
+]
